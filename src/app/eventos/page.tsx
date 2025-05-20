@@ -10,6 +10,15 @@ import { Button } from "@/components/ui/button";
 const allEvents: EventProps[] = [
   {
     id: "1",
+    title: "Culto da Família - Noite do Pastel",
+    date: "18 Mai, 2025",
+    time: "09:00",
+    location: "Comunidade São Marcos",
+    description: "Venha experienciar um culto especial voltado para as famílias, seguido de uma deliciosa venda de pastéis. Traga sua família e amigos!",
+    imageUrl: "https://images.pexels.com/photos/15010282/pexels-photo-15010282/free-photo-of-lanche-petisco-aperitivo-comida-rapida.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  },
+  {
+    id: "2",
     title: "Retiro de Jovens 2025",
     date: "21-23 Fev, 2025",
     time: "18:00",
@@ -18,22 +27,13 @@ const allEvents: EventProps[] = [
     imageUrl: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80",
   },
   {
-    id: "2",
+    id: "3",
     title: "Noite de Louvor",
     date: "15 Jun, 2025",
     time: "19:30",
     location: "Igreja Luterana Central",
     description: "Uma noite especial de música e adoração. Venha participar deste momento de conexão espiritual e celebração com outros jovens.",
     imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80",
-  },
-  {
-    id: "3",
-    title: "Culto da Família - Noite do Pastel",
-    date: "18 Mai, 2025",
-    time: "09:00",
-    location: "Comunidade São Marcos",
-    description: "Venha experienciar um culto especial voltado para as famílias, seguido de uma deliciosa venda de pastéis. Traga sua família e amigos!",
-    imageUrl: "https://images.pexels.com/photos/15010282/pexels-photo-15010282/free-photo-of-lanche-petisco-aperitivo-comida-rapida.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
   },
   {
     id: "4",
