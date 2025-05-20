@@ -5,6 +5,10 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 
+import logoJE from "@/assets/img/logoJE.png"
+import Image from "next/image"
+
+
 const navLinks = [
   { name: "Início", href: "/" },
   { name: "Eventos", href: "/eventos" },
@@ -19,8 +23,8 @@ export default function Header() {
   return (
     <header className="w-full border-b shadow-sm bg-white sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-gray-900">
-          <span className="text-red-800">JE</span> SãoMarcos
+        <Link href="/" className="flex text-2xl font-bold text-gray-900">
+          <Image src={logoJE} alt="logo JE São Marcos" height={40} />
         </Link>
 
         <nav className="hidden md:flex gap-6 items-center">
