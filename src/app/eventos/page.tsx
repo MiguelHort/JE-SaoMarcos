@@ -1,79 +1,66 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/header";
 import Footer from "@/components/footer";
 import EventCard, { EventProps } from "@/components/eventCard";
 import { Button } from "@/components/ui/button";
+import { getEvents } from "@/api/http/consultEvents"; 
 
-// Mock data for events
-const allEvents: EventProps[] = [
-  {
-    id: "1",
-    title: "Retiro de Jovens 2025",
-    date: "21-23 Fev, 2025",
-    time: "18:00",
-    location: "Acampamento Esperança, São Paulo",
-    description: "Um final de semana incrível de comunhão, reflexão e diversão. Junte-se a nós para um tempo de renovação espiritual e novas amizades.",
-    imageUrl: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80",
-  },
-  {
-    id: "2",
-    title: "Noite de Louvor",
-    date: "15 Jun, 2025",
-    time: "19:30",
-    location: "Igreja Luterana Central",
-    description: "Uma noite especial de música e adoração. Venha participar deste momento de conexão espiritual e celebração com outros jovens.",
-    imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80",
-  },
-  {
-    id: "3",
-    title: "Culto da Família - Noite do Pastel",
-    date: "18 Mai, 2025",
-    time: "09:00",
-    location: "Comunidade São Marcos",
-    description: "Venha experienciar um culto especial voltado para as famílias, seguido de uma deliciosa venda de pastéis. Traga sua família e amigos!",
-    imageUrl: "https://images.pexels.com/photos/15010282/pexels-photo-15010282/free-photo-of-lanche-petisco-aperitivo-comida-rapida.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-  },
-  {
-    id: "4",
-    title: "Estudo Bíblico Especial",
-    date: "05 Jul, 2025",
-    time: "20:00",
-    location: "Igreja Luterana Central",
-    description: "Um estudo profundo sobre o livro de Romanos. Traga sua Bíblia e muitas perguntas para um tempo de aprendizado e crescimento espiritual.",
-    imageUrl: "https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&q=80",
-  },
-];
-
-// Categories for filtering
 const categories = ["Todos", "Retiros", "Estudos", "Ação Social", "Louvor"];
 
 const EventsPage = () => {
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // Filter events based on category and search term
-  const filteredEvents = allEvents.filter((event) => {
-    const matchesCategory = 
-      activeCategory === "Todos" || 
-      (activeCategory === "Retiros" && event.title.toLowerCase().includes("retiro")) ||
-      (activeCategory === "Estudos" && event.title.toLowerCase().includes("estudo")) ||
-      (activeCategory === "Ação Social" && event.title.toLowerCase().includes("social")) ||
-      (activeCategory === "Louvor" && event.title.toLowerCase().includes("louvor"));
-    
-    const matchesSearch = 
+  const [events, setEvents] = useState<EventProps[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const data = await getEvents();
+        const mappedEvents = data.map((event) => ({
+          id: String(event.id),
+          title: event.name,
+          date: new Date(event.startDate).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" }),
+          time: new Date(event.startDate).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+          location: event.location,
+          description: event.description,
+          imageUrl: event.imageUrl,
+          category: event.category,
+        }));
+        console.log("Eventos mapeados:", mappedEvents);
+        setEvents(mappedEvents);
+      } catch (err) {
+        console.error("Erro ao buscar eventos:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const filteredEvents = events.filter((event) => {
+    const matchesCategory =
+      activeCategory === "Todos" ||
+      (activeCategory === "Retiros" && event.category.toLowerCase().includes("retiro")) ||
+      (activeCategory === "Estudos" && event.category.toLowerCase().includes("estudo")) ||
+      (activeCategory === "Ação Social" && event.category.toLowerCase().includes("social")) ||
+      (activeCategory === "Louvor" && event.category.toLowerCase().includes("louvor"));
+
+    const matchesSearch =
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.location.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     return matchesCategory && matchesSearch;
   });
 
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      
+
       {/* Header */}
       <section className="bg-primary py-12 text-white">
         <div className="container mx-auto px-4 text-center">
@@ -83,7 +70,7 @@ const EventsPage = () => {
           </p>
         </div>
       </section>
-      
+
       {/* Events Section */}
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
@@ -122,9 +109,11 @@ const EventsPage = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Events Grid */}
-          {filteredEvents.length > 0 ? (
+          {loading ? (
+            <p className="text-center text-gray-500">Carregando eventos...</p>
+          ) : filteredEvents.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredEvents.map((event) => (
                 <EventCard key={event.id} {...event} />
@@ -138,7 +127,7 @@ const EventsPage = () => {
           )}
         </div>
       </section>
-      
+
       {/* Event Proposal CTA */}
       <section className="bg-white py-16">
         <div className="container mx-auto px-4 text-center">
@@ -146,12 +135,12 @@ const EventsPage = () => {
           <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-700">
             Estamos sempre abertos a novas ideias! Se você tem uma proposta para um evento ou atividade para o nosso grupo de jovens, gostaríamos de ouvir.
           </p>
-          <Button size="lg" className="bg-secondary hover:bg-secondary-hover">
+          <Button size="lg" className="bg-red-800 hover:bg-secondary-hover">
             Propor um Evento
           </Button>
         </div>
       </section>
-      
+
       <Footer />
     </div>
   );

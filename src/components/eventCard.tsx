@@ -11,11 +11,12 @@ export interface EventProps {
     location: string;
     description: string;
     imageUrl: string;
+    category: string;
 }
 
-const EventCard = ({ title, date, time, location, description, imageUrl }: EventProps) => {
+const EventCard = ({ id, title, date, time, location, description, imageUrl }: EventProps) => {
     return (
-        <Card className="event-card overflow-hidden">
+        <Card className="event-card overflow-hidden pt-0">
             <div className="h-48 w-full overflow-hidden">
                 <img src={imageUrl} alt={title} className="h-full w-full object-cover" />
             </div>
@@ -31,9 +32,11 @@ const EventCard = ({ title, date, time, location, description, imageUrl }: Event
                 <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
             </CardContent>
             <CardFooter>
-                <Button className="w-full bg-cyan-700 hover:bg-secondary-hover">
-                    <Link href="/sobre#contato">Mais Detalhes</Link>
-                </Button>
+                <Link href={`/evento/${id}`} className="w-full">
+                    <Button className="w-full bg-cyan-700 hover:bg-secondary-hover">
+                        Mais Detalhes
+                    </Button>
+                </Link>
             </CardFooter>
         </Card>
     );
